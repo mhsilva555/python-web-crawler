@@ -1,13 +1,16 @@
 import csv
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .services.crawler import crawl_google_maps
 from .models import Company
 
+@login_required
 def index(request):
     return render(request, 'search/index.html')
 
 
+@login_required
 def search(request):
     if request.method == 'POST':
         segment = request.POST.get('segment')
@@ -21,6 +24,7 @@ def search(request):
         return render(request, 'search/results.html', {'results': results, 'segment': segment, 'city': city})
     return redirect('index')
 
+@login_required
 def export_csv(request):
     segment = request.GET.get('segment')
     city = request.GET.get('city')
@@ -45,6 +49,7 @@ def export_csv(request):
         
     return response
 
+@login_required
 def export_xml(request):
     segment = request.GET.get('segment')
     city = request.GET.get('city')
