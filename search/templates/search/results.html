@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Resultados - Company Crawler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="mb-4">Resultados para "{{ segment }}" em "{{ city }}"</h2>
+        <div class="mb-3">
+            <a href="{% url 'index' %}" class="btn btn-secondary">Nova Busca</a>
+            <a href="{% url 'export_csv' %}?segment={{ segment }}&city={{ city }}"
+                class="btn btn-info text-white">Exportar CSV</a>
+            <a href="{% url 'export_xml' %}?segment={{ segment }}&city={{ city }}"
+                class="btn btn-info text-white">Exportar XML</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered bg-white">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>Website</th>
+                        <th>Email</th>
+                        <th>Redes Sociais</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in results %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.phone|default:"-" }}</td>
+                        <td>
+                            {% if item.website %}
+                            <a href="{{ item.website }}" target="_blank">Link</a>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ item.email|default:"-" }}</td>
+                        <td>
+                            {% if item.social_media %}
+                            {% for net, link in item.social_media.items %}
+                            <a href="{{ link }}" target="_blank" class="badge bg-primary text-decoration-none">{{ net
+                                }}</a>
+                            {% endfor %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Nenhum resultado encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
